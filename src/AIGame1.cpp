@@ -41,8 +41,9 @@ AIGame1::AIGame1():
     auto player = repository.addNewPlayer();
     player->move({150.f, 150.f});
 
-    this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyPressedSubscriberInterface>(new PlayerMovementSubscriber(*player)));
-    this->eventLogger->logSubscriber(std::unique_ptr<Barta::KeyReleasedSubscriberInterface>(new PlayerMovementSubscriber(*player)));
+    auto playerMovementSubscriber = std::make_shared<PlayerMovementSubscriber>(*player);
+    this->eventLogger->logSubscriber(static_cast<std::shared_ptr<Barta::KeyPressedSubscriberInterface>>(playerMovementSubscriber));
+    this->eventLogger->logSubscriber(static_cast<std::shared_ptr<Barta::KeyReleasedSubscriberInterface>>(playerMovementSubscriber));
 }
 
 AIGame1::~AIGame1() = default;

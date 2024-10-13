@@ -8,7 +8,7 @@
 
 class PlayerMovementSubscriber: public Barta::KeyPressedSubscriberInterface, public Barta::KeyReleasedSubscriberInterface {
 public:
-    PlayerMovementSubscriber(Player& player) noexcept;
+    explicit PlayerMovementSubscriber(Player& player) noexcept;
 
     bool handle(Barta::KeyPressedEvent& event) override;
 
@@ -18,4 +18,5 @@ public:
 
 private:
     Player& player;
+    Barta::BartaKeyMap lastKeyPressed = Barta::BartaKeyMap::UNDEFINED;
 };

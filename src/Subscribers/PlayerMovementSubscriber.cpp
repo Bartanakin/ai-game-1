@@ -26,6 +26,7 @@ bool PlayerMovementSubscriber::handle(
         return false;
     }
 
+    this->lastKeyPressed = event.key;
     player.getDynamicsDTO().velocity = playerSpeed.rotated(direction);
 
     return true;
@@ -34,19 +35,16 @@ bool PlayerMovementSubscriber::handle(
 bool PlayerMovementSubscriber::handle(
     Barta::KeyReleasedEvent& event
 ) {
-    if (
-        event.key == Barta::BartaKeyMap::W
-        || event.key == Barta::BartaKeyMap::S
-        || event.key == Barta::BartaKeyMap::A
-        || event.key == Barta::BartaKeyMap::D
-    ) {
-
-        player.getDynamicsDTO().velocity = {0.f, 0.f};
-
-        return true;
+    if (event.key != Barta::BartaKeyMap::W && event.key != Barta::BartaKeyMap::S && event.key != Barta::BartaKeyMap::A
+        && event.key != Barta::BartaKeyMap::D) {
+        return false;
     }
 
-    return false;
+    if (this->lastKeyPressed == event.key) {
+        player.getDynamicsDTO().velocity = {0.f, 0.f};
+    }
+
+    return true;
 }
 
 bool PlayerMovementSubscriber::isValid() const noexcept {
