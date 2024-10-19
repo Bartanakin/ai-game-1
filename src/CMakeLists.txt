@@ -10,6 +10,8 @@ add_executable(${PROJECT_NAME}
         Agents/Wall.h
         Subscribers/PlayerMovementSubscriber.cpp
         Subscribers/PlayerMovementSubscriber.h
+        Subscribers/PlayerCollisionSubscriber.cpp
+        Subscribers/PlayerCollisionSubscriber.h
 )
 
 if(WIN32)

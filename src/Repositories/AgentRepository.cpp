@@ -21,10 +21,10 @@ Player* AgentRepository::addNewPlayer() noexcept {
     auto color = Barta::Color(255.f, 255.f, 0.f);
     auto triangleSprite = Barta::TriangleSprite(
         {
-            {10.f, 0.f},
-            {0.f, 24.f},
+            {10.f, 0.f },
+            {0.f,  24.f},
             {20.f, 24.f}
-        },
+    },
         color,
         color,
         color
@@ -36,9 +36,9 @@ Player* AgentRepository::addNewPlayer() noexcept {
             Barta::SFML_GraphicsBridge::createNewTransformableInstance(),
             merger.merge(false),
             4
-        },
+    },
         std::unique_ptr<Barta::HitboxInterface>(new Barta::CircleHitbox({8.f, {10.f, 14.f}})),
-        {{0., 0.}, false, 1.f}
+        {{}, false, 1.f, {}, 0.f, {10.f, 16.f}}
     );
 
     this->listManager.addObject(player);
@@ -48,7 +48,6 @@ Player* AgentRepository::addNewPlayer() noexcept {
 
     return player;
 }
-
 
 Wall* AgentRepository::addNewBoundingWall(
     Barta::Vector2f size,
