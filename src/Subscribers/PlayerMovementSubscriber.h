@@ -24,6 +24,7 @@ public:
 
 private:
     Player& player;
-    Barta::BartaKeyMap lastKeyPressed = Barta::BartaKeyMap::UNDEFINED;
+
+    Barta::BartaKeyMap lastKeyPressed = Barta::BartaKeyMap::UNKNOWN;
     Barta::Vector2f direction = {0.f, -1.f};
 };

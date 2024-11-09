@@ -1,11 +1,10 @@
 #pragma once
 
+#include "../Agents/Player.h"
+#include "../Agents/Wall.h"
 #include <Events/Events/CollisionEvent.h>
 #include <Events/Subscribers/CollisionResponseSubscriber.h>
 #include <Events/TemplateEventSubscriber.h>
-#include <Objects/Rigid/RigidObject.h>
-#include "../Agents/Player.h"
-#include "../Agents/Wall.h"
 
 using PlayerWall = Barta::CollisionEvent<Player, Wall>;
 

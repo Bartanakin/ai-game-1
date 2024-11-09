@@ -12,6 +12,33 @@ add_executable(${PROJECT_NAME}
         Subscribers/PlayerMovementSubscriber.h
         Subscribers/PlayerCollisionSubscriber.cpp
         Subscribers/PlayerCollisionSubscriber.h
+        Agents/Enemy.cpp
+        Agents/Enemy.h
+        Dynamics/SteeringBehaviourStrategy.cpp
+        Dynamics/SteeringBehaviourStrategy.h
+        Behaviours/BehavioursData.h
+        Behaviours/BehavioursDataAwareInterface.h
+        Behaviours/BehaviourInterface.h
+        Behaviours/Wander.cpp
+        Behaviours/Wander.h
+        Behaviours/ObstacleAvoidance.cpp
+        Behaviours/ObstacleAvoidance.h
+        Behaviours/ObstacleAvoidance.cpp
+        Behaviours/Hide.cpp
+        Behaviours/Hide.h
+        Behaviours/Arrive.cpp
+        Behaviours/Arrive.h
+        Behaviours/Evade.cpp
+        Behaviours/Evade.h
+        Behaviours/Flee.cpp
+        Behaviours/Flee.h
+        Events/PlayerPositionChangeEvent.h
+        PlayerPositionChangeSubscriber.cpp
+        PlayerPositionChangeSubscriber.h
+        EnemyBehaviours.cpp
+        EnemyBehaviours.h
+        Subscribers/EnemyCollisionSubscriber.cpp
+        Subscribers/EnemyCollisionSubscriber.h
 )
 
 if(WIN32)

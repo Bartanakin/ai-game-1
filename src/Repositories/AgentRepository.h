@@ -16,6 +16,10 @@ public:
 
     Wall* addNewBoundingWall(Barta::Vector2f size, Barta::Color color, bool infiniteMass = true) noexcept;
 
+    Wall* addNewWall(float radius, Barta::Vector2f position) noexcept;
+
+    Enemy* addNewEnemy(Barta::Vector2f position, float velocityAngleRadians) noexcept;
+
 private:
     ListManager& listManager;
     Barta::ObjectManagerInterface& objectManager;

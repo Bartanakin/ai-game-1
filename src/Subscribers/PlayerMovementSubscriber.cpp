@@ -28,21 +28,7 @@ bool PlayerMovementSubscriber::handle(
 
     this->lastKeyPressed = event.key;
     auto newVelocity = Barta::Vector2f::zeroise(playerSpeed.rotated(direction + playerSpeed.angleTo(this->player.getDirection())), 0.5f);
-    for (auto it = this->player.getWallNormVectors().begin(); it != this->player.getWallNormVectors().end();) {
-        if (*it * newVelocity > 0.f) {
-            it = this->player.getWallNormVectors().erase(it);
-
-            continue;
-        }
-
-        if (*it * newVelocity < 0.f) {
-            return false;
-        }
-
-        ++it;
-    }
-
-    player.getDynamicsDTO().velocity = playerSpeed.rotated(direction + playerSpeed.angleTo(this->player.getDirection()));
+    this->player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity = newVelocity;
 
     return true;
 }
@@ -56,7 +42,7 @@ bool PlayerMovementSubscriber::handle(
     }
 
     if (this->lastKeyPressed == event.key) {
-        player.getDynamicsDTO().velocity = {0.f, 0.f};
+        this->player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity = {};
     }
 
     return true;
@@ -66,9 +52,16 @@ bool PlayerMovementSubscriber::handle(
     Barta::MouseMoveEvent& event
 ) {
     auto direction = event.getPosition() - this->player.getPosition();
+    if (direction.zeroised().isZero()) {
+        return false;
+    }
+
     direction = direction.normalised();
 
-    this->player.setDirection(direction);
+    player.setRotation(std::atan2(direction.y, direction.x) * 180.f / M_PI + 90.f);
+    player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity =
+        player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity.rotated(player.getDirection().angleTo(direction));
+    player.setDirection(direction);
 
     return false;
 }

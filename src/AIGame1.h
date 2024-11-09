@@ -1,5 +1,11 @@
 #pragma once
+#include "Behaviours/Arrive.h"
+#include "Behaviours/Flee.h"
+#include "Behaviours/ObstacleAvoidance.h"
+#include "Behaviours/Wander.h"
 #include "Constants.h"
+#include "EnemyBehaviours.h"
+#include "Events/PlayerPositionChangeEvent.h"
 #include "Predefines.h"
 #include <Application.h>
 
@@ -13,6 +19,16 @@ public:
 
     void run() override;
 
+    void postDynamicUpdate() override;
+
 private:
     static std::unique_ptr<Barta::TimerInterface> gameTimer;
+    std::random_device randomDevice;
+    Barta::EventMatcher<Events::PlayerPositionChangeEvent> customEventsLogger;
+
+    Behaviours::Wander enemyWander;
+    Behaviours::ObstacleAvoidance enemyObstacleAvoidance;
+    Behaviours::Arrive arrive;
+    Behaviours::Flee flee;
+    Behaviours::EnemyBehaviours enemyBehaviours;
 };

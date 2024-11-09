@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "PlayerWallCollisionSubscriber.h"
+#include "../Events/PlayerWallCollisionEvent.h"
 
 class PlayerCollisionSubscriber: public PlayerWallSubscriber {
 public:

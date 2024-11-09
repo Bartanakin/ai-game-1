@@ -7,8 +7,8 @@
 bool PlayerCollisionSubscriber::handle(
     PlayerWall& event
 ) {
-    event.getTestResult().object1->getDynamicsDTO().velocity = {};
-    event.getTestResult().object1->getWallNormVectors().push_back(event.getTestResult().collisionTestResult.normVector);
+    // event.getTestResult().object1->getDynamicsDTO().velocity = {};
+    // event.getTestResult().object1->getWallNormVectors().push_back(event.getTestResult().collisionTestResult.normVector);
 
     return true;
 }
