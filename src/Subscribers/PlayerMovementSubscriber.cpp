@@ -12,22 +12,12 @@ PlayerMovementSubscriber::PlayerMovementSubscriber(
 bool PlayerMovementSubscriber::handle(
     Barta::KeyPressedEvent& event
 ) {
-    const Barta::Vector2f playerSpeed = {40.f, 0.f};
-    float direction = M_PI / 2.f;
-    if (event.key == Barta::BartaKeyMap::W) {
-        direction *= 0.f;
-    } else if (event.key == Barta::BartaKeyMap::S) {
-        direction *= 2.f;
-    } else if (event.key == Barta::BartaKeyMap::A) {
-        direction *= 3.f;
-    } else if (event.key == Barta::BartaKeyMap::D) {
-        direction *= 1.f;
-    } else {
+    if (event.key != Barta::BartaKeyMap::W) {
         return false;
     }
 
-    this->lastKeyPressed = event.key;
-    auto newVelocity = Barta::Vector2f::zeroise(playerSpeed.rotated(direction + playerSpeed.angleTo(this->player.getDirection())), 0.5f);
+    constexpr Barta::Vector2f PLAYER_VELOCITY = {32.f, 0.f};
+    auto newVelocity = Barta::Vector2f::zeroise(PLAYER_VELOCITY.rotated(PLAYER_VELOCITY.angleTo(this->player.getDirection())), 0.5f);
     this->player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity = newVelocity;
 
     return true;
@@ -36,14 +26,11 @@ bool PlayerMovementSubscriber::handle(
 bool PlayerMovementSubscriber::handle(
     Barta::KeyReleasedEvent& event
 ) {
-    if (event.key != Barta::BartaKeyMap::W && event.key != Barta::BartaKeyMap::S && event.key != Barta::BartaKeyMap::A
-        && event.key != Barta::BartaKeyMap::D) {
+    if (event.key != Barta::BartaKeyMap::W) {
         return false;
     }
 
-    if (this->lastKeyPressed == event.key) {
-        this->player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity = {};
-    }
+    this->player.getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity = {};
 
     return true;
 }

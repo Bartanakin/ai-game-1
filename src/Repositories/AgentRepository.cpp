@@ -18,27 +18,16 @@ AgentRepository::AgentRepository(
     objectManager(objectManager) {}
 
 Player* AgentRepository::addNewPlayer() noexcept {
-    auto color = Barta::Color(255.f, 255.f, 0.f);
-    auto triangleSprite = Barta::TriangleSprite(
-        {
-            {10.f, 0.f },
-            {0.f,  24.f},
-            {20.f, 24.f}
-    },
-        color,
-        color,
-        color
-    );
-    auto merger = Barta::SpriteMerger();
-    merger.addTriangle(triangleSprite);
     auto player = new Player(
         {
             Barta::SFML_GraphicsBridge::createNewTransformableInstance(),
-            merger.merge(false),
+            {},
             4
     },
         std::unique_ptr<Barta::HitboxInterface>(new Barta::CircleHitbox({8.f, {10.f, 14.f}})),
-        {{}, false, 1.f, {}, 0.f, {10.f, 16.f}}
+        {{}, false, 1.f, {}, 0.f, {10.f, 16.f}},
+
+        {Barta::SFML_GraphicsBridge::createNewTransformableInstance(), {}, 4}
     );
 
     this->listManager.addObject(player);
@@ -72,7 +61,7 @@ Wall* AgentRepository::addNewBoundingWall(
 
     this->listManager.addObject(aabb);
     this->objectManager.addGraphicsObject(aabb);
-    // this->objectManager.addDynamicsObject(aabb);
+    this->objectManager.addDynamicsObject(aabb);
     this->objectManager.addNewObject(aabb);
 
     return aabb;
@@ -89,19 +78,22 @@ Wall* AgentRepository::addNewWall(
     auto merger = Barta::SpriteMerger();
     merger.addCircleSprite({
         {radius, {radius, radius}},
-        {50, 191, 66, 255}
+        {28, 25, 181, 255}
     });
+    Barta::DynamicsDTO dynamics = {{}};
+    dynamics.hasInfiniteMass = true;
+    dynamics.massCenter = {radius, radius};
     auto wall = new Wall(
         {Barta::SFML_GraphicsBridge::createNewTransformableInstance(), merger.merge(false), 4},
         std::unique_ptr<Barta::HitboxInterface>(new Barta::CircleHitbox(circle)),
-        {{}}
+        dynamics
     );
 
     wall->move(position);
 
     this->listManager.addObject(wall);
     this->objectManager.addGraphicsObject(wall);
-    // this->objectManager.addDynamicsObject(wall);
+    this->objectManager.addDynamicsObject(wall);
     this->objectManager.addNewObject(wall);
 
     return wall;
@@ -109,7 +101,7 @@ Wall* AgentRepository::addNewWall(
 
 Enemy* AgentRepository::addNewEnemy(
     Barta::Vector2f position,
-    float velocityAngleRadians
+    std::random_device& randomDevice
 ) noexcept {
     constexpr float ENEMY_RADIUS = 8.f;
     auto circle = Barta::Circle{
@@ -122,14 +114,23 @@ Enemy* AgentRepository::addNewEnemy(
         {255, 0, 0, 255}
     });
     Behaviours::BehaviourData behaviourData{};
-    behaviourData.wanderDistance = 20.f;
-    behaviourData.wanderJitter = 10.f;
-    behaviourData.wanderRadius = 20.f;
-    behaviourData.wanderTarget = {};
+    behaviourData.wander.distance = 20.f;
+    behaviourData.wander.jitter = 10.f;
+    behaviourData.wander.radius = 20.f;
+    behaviourData.wander.target = {};
+    behaviourData.obstacleAvoidance.minDetectionBoxWidth = 2.f * ENEMY_RADIUS;
+    behaviourData.obstacleAvoidance.additionalDetectionBoxWidth = ENEMY_RADIUS + 0.5f;
+    behaviourData.obstacleAvoidance.minDetectionBoxLength = 10.f;
+    behaviourData.obstacleAvoidance.additionalDetectionBoxLength = 40.f;
+    behaviourData.hide.distanceFromBoundary = 30.f;
+    behaviourData.groupBehaviours.neighborhoodRadius = 80.f;
+    behaviourData.groupBehaviours.cohesionCoefficient = 0.3f;
+    behaviourData.groupBehaviours.alignmentCoefficient = 2.f;
+    behaviourData.groupBehaviours.separationCoefficient = 1.f;
+    behaviourData.groupBehaviours.minimalSeparationDistance = 2 * ENEMY_RADIUS + 5.f;
     behaviourData.maxSpeed = Enemy::MAX_SPEED;
-    behaviourData.detectionBoxWidth = 3.f * ENEMY_RADIUS + 0.5f;
-    behaviourData.minDetectionBoxLength = 50.f;
     behaviourData.accelerationDelay = .5f;
+    std::mt19937 engine(100);
     auto enemy = new Enemy(
         {
             Barta::SFML_GraphicsBridge::createNewTransformableInstance(),
@@ -137,15 +138,21 @@ Enemy* AgentRepository::addNewEnemy(
             4
     },
         std::unique_ptr<Barta::HitboxInterface>(new Barta::CircleHitbox(circle)),
-        {Barta::Vector2f(Enemy::MAX_SPEED, 0.f).rotated(velocityAngleRadians), false, 1.f, {}, 0.f, {ENEMY_RADIUS, ENEMY_RADIUS}},
-        behaviourData
+        {Barta::Vector2f(Enemy::MAX_SPEED, 0.f).rotated(std::uniform_real_distribution<float>(0.f, 2 * M_PI)(engine)),
+         false,
+         1.f,
+         {},
+         0.f,
+         {ENEMY_RADIUS, ENEMY_RADIUS}},
+        behaviourData,
+        circle
     );
 
     enemy->move(position);
 
     this->listManager.addObject(enemy);
     this->objectManager.addGraphicsObject(enemy);
-    // this->objectManager.addDynamicsObject(enemy);
+    this->objectManager.addDynamicsObject(enemy);
     this->objectManager.addNewObject(enemy);
 
     return enemy;

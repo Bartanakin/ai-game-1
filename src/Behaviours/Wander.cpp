@@ -15,18 +15,18 @@ Barta::Vector2f Behaviours::Wander::changeBehaviour(
 ) const {
     std::mt19937 engine(this->randomDevice());
 
-    auto wanderTarget = behaviourDataAware.getBehavioursData().wanderTarget;
-    wanderTarget += behaviourDataAware.getBehavioursData().wanderJitter * Barta::Vector2f(this->getRandom(engine), this->getRandom(engine));
-    wanderTarget = behaviourDataAware.getBehavioursData().wanderRadius * wanderTarget.normalised();
+    auto wanderTarget = behaviourDataAware.getBehavioursData().wander.target;
+    wanderTarget += behaviourDataAware.getBehavioursData().wander.jitter * Barta::Vector2f(this->getRandom(engine), this->getRandom(engine));
+    wanderTarget = behaviourDataAware.getBehavioursData().wander.radius * wanderTarget.normalised();
 
-    behaviourDataAware.getBehavioursData().wanderTarget = wanderTarget;
+    behaviourDataAware.getBehavioursData().wander.target = wanderTarget;
 
     auto direction = behaviourDataAware.getDynamicsDTOs()[Barta::DynamicsDTOIteration::CURRENT].velocity;
     if (direction.zeroised() == Barta::Vector2f{}) {
         direction = {1.f, 0.f};
     }
 
-    return wanderTarget + direction.projection(Barta::Vector2f(behaviourDataAware.getBehavioursData().wanderDistance, 0.f));
+    return wanderTarget + direction.projection(Barta::Vector2f(behaviourDataAware.getBehavioursData().wander.distance, 0.f));
 }
 
 float Behaviours::Wander::getRandom(

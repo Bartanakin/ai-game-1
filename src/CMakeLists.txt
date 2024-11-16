@@ -21,10 +21,7 @@ add_executable(${PROJECT_NAME}
         Behaviours/BehaviourInterface.h
         Behaviours/Wander.cpp
         Behaviours/Wander.h
-        Behaviours/ObstacleAvoidance.cpp
         Behaviours/ObstacleAvoidance.h
-        Behaviours/ObstacleAvoidance.cpp
-        Behaviours/Hide.cpp
         Behaviours/Hide.h
         Behaviours/Arrive.cpp
         Behaviours/Arrive.h
@@ -32,13 +29,30 @@ add_executable(${PROJECT_NAME}
         Behaviours/Evade.h
         Behaviours/Flee.cpp
         Behaviours/Flee.h
-        Events/PlayerPositionChangeEvent.h
-        PlayerPositionChangeSubscriber.cpp
-        PlayerPositionChangeSubscriber.h
-        EnemyBehaviours.cpp
-        EnemyBehaviours.h
+        EnemyEvadeBehaviours.cpp
+        EnemyEvadeBehaviours.h
         Subscribers/EnemyCollisionSubscriber.cpp
         Subscribers/EnemyCollisionSubscriber.h
+        Behaviours/Seek.cpp
+        Behaviours/Seek.h
+        Behaviours/Pursuit.cpp
+        Behaviours/Pursuit.h
+        Behaviours/GroupBehaviours.h
+        Behaviours/Separation.h
+        Behaviours/Alignment.h
+        Behaviours/Cohesion.h
+        Events/PlayerEnemyCollisionEvent.h
+        Events/EnemyEnemyCollisionEvent.h
+        Subscribers/PlayerShotSubscriber.cpp
+        Subscribers/PlayerShotSubscriber.h
+        Events/PlayerMarkerChangeEvent.h
+        Subscribers/EnemyAttackSubscriber.cpp
+        Subscribers/EnemyAttackSubscriber.h
+        EnemyAttackBehaviours.cpp
+        EnemyAttackBehaviours.h
+        Events/CheckEnemyTriggerEvent.h
+        Subscribers/CheckEnemyTriggerSubscriber.cpp
+        Subscribers/CheckEnemyTriggerSubscriber.h
 )
 
 if(WIN32)

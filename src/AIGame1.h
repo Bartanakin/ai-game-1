@@ -1,13 +1,12 @@
 #pragma once
-#include "Behaviours/Arrive.h"
-#include "Behaviours/Flee.h"
-#include "Behaviours/ObstacleAvoidance.h"
-#include "Behaviours/Wander.h"
-#include "Constants.h"
-#include "EnemyBehaviours.h"
-#include "Events/PlayerPositionChangeEvent.h"
+#include "Behaviours/Hide.h"
+#include "EnemyAttackBehaviours.h"
+#include "EnemyEvadeBehaviours.h"
+#include "Events/CheckEnemyTriggerEvent.h"
+#include "Events/PlayerMarkerChangeEvent.h"
 #include "Predefines.h"
 #include <Application.h>
+#include <Predefines.h>
 
 class AIGame1: public Barta::Application<DefaultCollisionLogger, CollisionEventsLogger, ListManager, CollisionCoreExecutor> {
 public:
@@ -19,16 +18,19 @@ public:
 
     void run() override;
 
+    void preGarbageCollect() override;
+
     void postDynamicUpdate() override;
+
+    bool isRunning() override;
 
 private:
     static std::unique_ptr<Barta::TimerInterface> gameTimer;
     std::random_device randomDevice;
-    Barta::EventMatcher<Events::PlayerPositionChangeEvent> customEventsLogger;
 
-    Behaviours::Wander enemyWander;
-    Behaviours::ObstacleAvoidance enemyObstacleAvoidance;
-    Behaviours::Arrive arrive;
-    Behaviours::Flee flee;
-    Behaviours::EnemyBehaviours enemyBehaviours;
+    Player* player; // Object manager dependency
+    Behaviours::EnemyEvadeBehaviours* enemyEvadeBehaviours_ptr;
+    Behaviours::EnemyAttackBehaviours* enemyAttackBehaviours_ptr;
+
+    Barta::EventMatcher<PlayerMarkerChangeEvent, CheckEnemyTriggerEvent> customEventMatcher;
 };

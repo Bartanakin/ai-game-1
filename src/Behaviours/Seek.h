@@ -1,5 +1,5 @@
 //
-// Created by bartanakin on 11/2/24.
+// Created by bartanakin on 11/9/24.
 //
 
 #pragma once
@@ -7,15 +7,14 @@
 
 namespace Behaviours {
 
-class Flee: public virtual BehaviourInterface {
+class Seek: public virtual BehaviourInterface {
 public:
-    Flee() = default;
-    Flee(const Barta::Vector2f& hunterPosition) noexcept;
+    explicit Seek(const Barta::Vector2f& targetPosition) noexcept;
 
     Barta::Vector2f changeBehaviour(BehavioursDataAwareInterface& behaviourDataAware, float deltaTime) const override;
 
 private:
-    const Barta::Vector2f& hunterPosition;
+    const Barta::Vector2f& targetPosition;
 };
 
 } // Behaviours

@@ -18,7 +18,7 @@ public:
 
     Wall* addNewWall(float radius, Barta::Vector2f position) noexcept;
 
-    Enemy* addNewEnemy(Barta::Vector2f position, float velocityAngleRadians) noexcept;
+    Enemy* addNewEnemy(Barta::Vector2f position, std::random_device& randomDevice) noexcept;
 
 private:
     ListManager& listManager;

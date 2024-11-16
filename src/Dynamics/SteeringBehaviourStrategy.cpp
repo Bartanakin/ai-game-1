@@ -7,10 +7,12 @@
 
 SteeringBehaviourStrategy::SteeringBehaviourStrategy(
     ListManager& listManager,
-    Behaviours::BehaviourInterface& enemyBehaviour
+    Behaviours::BehaviourInterface& enemyEvadeBehaviour,
+    Behaviours::BehaviourInterface& enemyAttackBehaviour
 ):
     listManager(listManager),
-    enemyBehaviour(enemyBehaviour) {}
+    enemyEvadeBehaviour(enemyEvadeBehaviour),
+    enemyAttackBehaviour(enemyAttackBehaviour) {}
 
 void SteeringBehaviourStrategy::prepare(
     const float deltaTime
@@ -20,8 +22,13 @@ void SteeringBehaviourStrategy::prepare(
     Barta::ConstVelocityDynamicsUpdateStrategy{enemyList}.prepare(deltaTime);
 
     for (auto enemy: enemyList) {
-        enemy->getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].force =
-            this->enemyBehaviour.changeBehaviour(*static_cast<Behaviours::BehavioursDataAwareInterface*>(enemy), deltaTime);
+        if (enemy->isTriggered() && enemy->getTriggerTimePoint() < std::chrono::steady_clock::now()) {
+            enemy->getNextDynamicsData().force =
+                this->enemyAttackBehaviour.changeBehaviour(*static_cast<Behaviours::BehavioursDataAwareInterface*>(enemy), deltaTime);
+        } else {
+            enemy->getNextDynamicsData().force =
+                this->enemyEvadeBehaviour.changeBehaviour(*static_cast<Behaviours::BehavioursDataAwareInterface*>(enemy), deltaTime);
+        }
     }
 
     // player
@@ -34,9 +41,9 @@ void SteeringBehaviourStrategy::update(
     auto& enemyList = this->listManager.getList(static_cast<Enemy*>(nullptr));
     Barta::ConstVelocityDynamicsUpdateStrategy{enemyList}.update(false);
     for (auto enemy: enemyList) {
-        if (enemy->getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity.zeroised() != Barta::Vector2f{}) {
+        if (enemy->getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity.zeroised().normSquare() >= std::pow(Enemy::MAX_SPEED, 2)) {
             enemy->getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity =
-                enemy->getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity.normalised().zeroised() * Enemy::MAX_SPEED;
+                enemy->getDynamicsDTOs()[Barta::DynamicsDTOIteration::NEXT].velocity.zeroised().normalised() * Enemy::MAX_SPEED;
         }
 
         enemy->getDynamicsDTOs().forward();

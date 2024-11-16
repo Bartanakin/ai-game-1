@@ -8,18 +8,39 @@
 namespace Behaviours {
 struct BehaviourData {
     BehaviourData() = default;
-    // obstacle avoidance
-    float minDetectionBoxLength;
+
+    struct ObstacleAvoidance {
+        float minDetectionBoxLength;
+        float additionalDetectionBoxLength;
+        float minDetectionBoxWidth;
+        float additionalDetectionBoxWidth;
+    };
+
+    struct Wander {
+        float radius;
+        float distance;
+        float jitter;
+        Barta::Vector2f target;
+    };
+
+    struct Hide {
+        float distanceFromBoundary;
+    };
+
+    struct GroupBehaviours {
+        float neighborhoodRadius;
+        float cohesionCoefficient;
+        float separationCoefficient;
+        float minimalSeparationDistance;
+        float alignmentCoefficient;
+    };
+
+    ObstacleAvoidance obstacleAvoidance;
+    Wander wander;
+    Hide hide;
+    GroupBehaviours groupBehaviours;
+
     float maxSpeed;
-    float detectionBoxWidth;
-
-    // wander
-    float wanderRadius;
-    float wanderDistance;
-    float wanderJitter;
-    Barta::Vector2f wanderTarget;
-
-    // delay
     float accelerationDelay;
 };
 }
