@@ -7,14 +7,15 @@
 
 class CheckEnemyTriggerSubscriber: public virtual CheckEnemyTriggerSubscriberInterface {
 public:
-    static constexpr unsigned int TRIGGER_COUNT = 3;
+    static constexpr unsigned int TRIGGER_COUNT = 4;
     static constexpr float TRIGGER_RADIUS = 80.f;
 
-    CheckEnemyTriggerSubscriber() = default;
+    CheckEnemyTriggerSubscriber(std::random_device& randomDevice) noexcept;
 
     bool handle(CheckEnemyTriggerEvent& event) override;
 
     bool isValid() const noexcept override;
 
 private:
+    std::random_device& randomDevice;
 };

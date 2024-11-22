@@ -7,6 +7,13 @@ public:
     static constexpr float MAX_SPEED = 25.f;
     static constexpr int INITIAL_HEALTH = 4;
     static constexpr auto RELOAD_TIME = std::chrono::milliseconds{2000};
+
+    enum class EnemyBehaviourType {
+        WANDER = 0,
+        HIDE = 1,
+        ATTACK = 2
+    };
+
     Enemy(
         Barta::GraphicsData graphicsData,
         std::unique_ptr<Barta::HitboxInterface> hitbox,
@@ -29,9 +36,23 @@ public:
 
     bool isTriggered() const noexcept;
 
-    std::chrono::time_point<std::chrono::steady_clock> getTriggerTimePoint() const noexcept { return this->triggerTime; }
+    void doTrigger();
 
-    void doTrigger(std::chrono::time_point<std::chrono::steady_clock> triggerTime);
+    std::chrono::time_point<std::chrono::steady_clock> getWanderHideChangeTime() const { return this->wanderHideChangeTime; }
+
+    void setWanderHideChangeTime(
+        const std::chrono::time_point<std::chrono::steady_clock>& wanderHideChangeTime
+    ) {
+        this->wanderHideChangeTime = wanderHideChangeTime;
+    }
+
+    EnemyBehaviourType getBehaviourType() const { return this->behaviourType; }
+
+    void setBehaviourType(
+        EnemyBehaviourType behaviourType
+    ) {
+        this->behaviourType = behaviourType;
+    }
 
 private:
     Behaviours::BehaviourData behaviourData;
@@ -39,6 +60,6 @@ private:
     unsigned int health;
     Barta::Circle circle;
     std::chrono::time_point<std::chrono::steady_clock> lastTimeShot;
-    bool triggered;
-    std::chrono::time_point<std::chrono::steady_clock> triggerTime;
+    EnemyBehaviourType behaviourType;
+    std::chrono::time_point<std::chrono::steady_clock> wanderHideChangeTime;
 };

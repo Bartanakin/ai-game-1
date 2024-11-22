@@ -2,6 +2,7 @@
 #include "Behaviours/Hide.h"
 #include "EnemyAttackBehaviours.h"
 #include "EnemyEvadeBehaviours.h"
+#include "EnemyWanderBehaviours.h"
 #include "Events/CheckEnemyTriggerEvent.h"
 #include "Events/PlayerMarkerChangeEvent.h"
 #include "Predefines.h"
@@ -31,6 +32,7 @@ private:
     Player* player; // Object manager dependency
     Behaviours::EnemyEvadeBehaviours* enemyEvadeBehaviours_ptr;
     Behaviours::EnemyAttackBehaviours* enemyAttackBehaviours_ptr;
+    Behaviours::EnemyWanderBehaviours* enemyWanderBehaviours_ptr;
 
     Barta::EventMatcher<PlayerMarkerChangeEvent, CheckEnemyTriggerEvent> customEventMatcher;
 };

@@ -12,7 +12,8 @@ public:
     explicit SteeringBehaviourStrategy(
         ListManager& listManager,
         Behaviours::BehaviourInterface& enemyEvadeBehaviour,
-        Behaviours::BehaviourInterface& enemyAttackBehaviour
+        Behaviours::BehaviourInterface& enemyAttackBehaviour,
+        Behaviours::BehaviourInterface& enemyWanderBehaviour
     );
 
     void prepare(float) override;
@@ -23,4 +24,5 @@ private:
     ListManager& listManager;
     Behaviours::BehaviourInterface& enemyEvadeBehaviour;
     Behaviours::BehaviourInterface& enemyAttackBehaviour;
+    Behaviours::BehaviourInterface& enemyWanderBehaviour;
 };

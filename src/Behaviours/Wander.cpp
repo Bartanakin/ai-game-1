@@ -22,15 +22,16 @@ Barta::Vector2f Behaviours::Wander::changeBehaviour(
     behaviourDataAware.getBehavioursData().wander.target = wanderTarget;
 
     auto direction = behaviourDataAware.getDynamicsDTOs()[Barta::DynamicsDTOIteration::CURRENT].velocity;
-    if (direction.zeroised() == Barta::Vector2f{}) {
+    if (direction.isZero()) {
         direction = {1.f, 0.f};
+    std::cout << direction << std::endl;
     }
 
-    return wanderTarget + direction.projection(Barta::Vector2f(behaviourDataAware.getBehavioursData().wander.distance, 0.f));
+    return wanderTarget + direction.normalised() * behaviourDataAware.getBehavioursData().wander.distance;
 }
 
 float Behaviours::Wander::getRandom(
     std::mt19937& engine
 ) const noexcept {
-    return std::uniform_real_distribution(-1.f, 1.f)(engine);
+    return std::uniform_real_distribution(0.f, 2.f)(engine) - 1.f;
 }

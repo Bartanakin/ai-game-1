@@ -19,7 +19,8 @@ Enemy::Enemy(
     health(Enemy::INITIAL_HEALTH),
     circle(circle),
     lastTimeShot(std::chrono::steady_clock::now()),
-    triggered(false) {}
+    behaviourType(Enemy::EnemyBehaviourType::WANDER),
+    wanderHideChangeTime(std::chrono::time_point<std::chrono::steady_clock>::min()) {}
 
 Behaviours::BehaviourData& Enemy::getBehavioursData() noexcept {
     return this->behaviourData;
@@ -64,7 +65,7 @@ bool Enemy::isToBeDeleted() const {
 }
 
 bool Enemy::tryToShoot() {
-    if (!this->triggered || std::chrono::steady_clock::now() < this->triggerTime) {
+    if (this->behaviourType != EnemyBehaviourType::ATTACK) {
         return false;
     }
 
@@ -75,19 +76,4 @@ bool Enemy::tryToShoot() {
     this->lastTimeShot = std::chrono::steady_clock::now();
 
     return true;
-}
-
-bool Enemy::isTriggered() const noexcept {
-    return this->triggered;
-}
-
-void Enemy::doTrigger(
-    std::chrono::time_point<std::chrono::steady_clock> triggerTime
-) {
-    if (this->triggered && triggerTime > this->triggerTime) {
-        return;
-    }
-
-    this->triggered = true;
-    this->triggerTime = triggerTime;
 }

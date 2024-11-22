@@ -3,24 +3,24 @@
 //
 
 #include "Behaviours/Wander.h"
-#include "EnemyEvadeBehaviours.h"
+#include "EnemyWanderBehaviours.h"
 
-Behaviours::EnemyEvadeBehaviours::EnemyEvadeBehaviours(
+Behaviours::EnemyWanderBehaviours::EnemyWanderBehaviours(
     ObstacleAvoidance<Wall> obstacleAvoidance,
-    Hide<Wall> hide,
-    GroupBehaviours<Enemy> groupBehaviours
+    GroupBehaviours<Enemy> groupBehaviours,
+    Wander wander
 ) noexcept:
     obstacleAvoidance(std::move(obstacleAvoidance)),
-    hide(std::move(hide)),
-    groupBehaviours(std::move(groupBehaviours)) {}
+    groupBehaviours(std::move(groupBehaviours)),
+    wander(std::move(wander)) {}
 
-Barta::Vector2f Behaviours::EnemyEvadeBehaviours::changeBehaviour(
+Barta::Vector2f Behaviours::EnemyWanderBehaviours::changeBehaviour(
     BehavioursDataAwareInterface& behaviourDataAware,
     float deltaTime
 ) const {
     auto avoidanceForce = this->obstacleAvoidance.changeBehaviour(behaviourDataAware, deltaTime);
-    auto hideForce = this->hide.changeBehaviour(behaviourDataAware, deltaTime);
     auto groupBehaviours = this->groupBehaviours.changeBehaviour(behaviourDataAware, deltaTime);
+    auto wanderForce = this->wander.changeBehaviour(behaviourDataAware, deltaTime);
 
-    return hideForce + avoidanceForce + groupBehaviours;
+    return wanderForce + avoidanceForce + groupBehaviours;
 }

@@ -32,7 +32,8 @@ AIGame1::AIGame1():
     randomDevice(std::random_device{}),
     player(nullptr),
     enemyEvadeBehaviours_ptr(nullptr),
-    enemyAttackBehaviours_ptr(nullptr) {
+    enemyAttackBehaviours_ptr(nullptr),
+    enemyWanderBehaviours_ptr(nullptr) {
     auto repository = AgentRepository(this->objectLists, *this->objectManager);
 
     // walls
@@ -45,30 +46,30 @@ AIGame1::AIGame1():
     rightBound->move({650.f, 50.f});
     auto bottomBound = repository.addNewBoundingWall({650.f, 50.f}, boundColor);
     bottomBound->move({0.f, 650.f});
-    repository.addNewWall(30.f, {100.f, 120.f});
+    repository.addNewWall(30.f, {130.f, 90.f});
     repository.addNewWall(40.f, {400.f, 120.f});
     repository.addNewWall(30.f, {280.f, 400.f});
-    repository.addNewWall(50.f, {490.f, 470.f});
+    repository.addNewWall(45.f, {460.f, 470.f});
 
     // enemies
     std::random_device randomDevice;
-    repository.addNewEnemy({200.f, 280.f}, randomDevice);
+    repository.addNewEnemy({160.f, 240.f}, randomDevice);
     repository.addNewEnemy({300.f, 300.f}, randomDevice);
     repository.addNewEnemy({420.f, 60.f}, randomDevice);
     repository.addNewEnemy({530.f, 280.f}, randomDevice);
     repository.addNewEnemy({80.f, 280.f}, randomDevice);
-    repository.addNewEnemy({250.f, 320.f}, randomDevice);
+    // repository.addNewEnemy({250.f, 320.f}, randomDevice);
     repository.addNewEnemy({280.f, 580.f}, randomDevice);
     repository.addNewEnemy({310.f, 600.f}, randomDevice);
     repository.addNewEnemy({540.f, 610.f}, randomDevice);
-    repository.addNewEnemy({600.f, 600.f}, randomDevice);
+    // repository.addNewEnemy({600.f, 600.f}, randomDevice);
     repository.addNewEnemy({70.f, 530.f}, randomDevice);
     repository.addNewEnemy({280.f, 80.f}, randomDevice);
-    repository.addNewEnemy({600.f, 80.f}, randomDevice);
+    // repository.addNewEnemy({600.f, 80.f}, randomDevice);
     repository.addNewEnemy({420.f, 240.f}, randomDevice);
     repository.addNewEnemy({560.f, 420.f}, randomDevice);
 
-    this->customEventMatcher.logSubscriber(std::make_shared<CheckEnemyTriggerSubscriber>());
+    this->customEventMatcher.logSubscriber(std::make_shared<CheckEnemyTriggerSubscriber>(this->randomDevice));
 
     auto enemyAttackSubscriber = std::make_shared<EnemyAttackSubscriber>();
     this->collisionEventsLogger.logSubscriber(enemyAttackSubscriber);
@@ -107,8 +108,7 @@ AIGame1::AIGame1():
             this->player->getCurrentDynamicsData().velocity,
             this->objectLists.getList(static_cast<Wall*>(nullptr))
         ),
-        Behaviours::GroupBehaviours(this->objectLists.getList(static_cast<Enemy*>(nullptr))),
-        Behaviours::Wander(this->randomDevice)
+        Behaviours::GroupBehaviours(this->objectLists.getList(static_cast<Enemy*>(nullptr)))
     );
 
     this->enemyAttackBehaviours_ptr = new Behaviours::EnemyAttackBehaviours(
@@ -117,8 +117,18 @@ AIGame1::AIGame1():
         Behaviours::GroupBehaviours(this->objectLists.getList(static_cast<Enemy*>(nullptr)))
     );
 
-    this->dynamicsUpdateStrategy =
-        std::make_unique<SteeringBehaviourStrategy>(this->objectLists, *this->enemyEvadeBehaviours_ptr, *this->enemyAttackBehaviours_ptr);
+    this->enemyWanderBehaviours_ptr = new Behaviours::EnemyWanderBehaviours(
+        Behaviours::ObstacleAvoidance(this->objectLists.getList(static_cast<Wall*>(nullptr))),
+        Behaviours::GroupBehaviours(this->objectLists.getList(static_cast<Enemy*>(nullptr))),
+        Behaviours::Wander(this->randomDevice)
+    );
+
+    this->dynamicsUpdateStrategy = std::make_unique<SteeringBehaviourStrategy>(
+        this->objectLists,
+        *this->enemyEvadeBehaviours_ptr,
+        *this->enemyAttackBehaviours_ptr,
+        *this->enemyWanderBehaviours_ptr
+    );
 }
 
 AIGame1::~AIGame1() {

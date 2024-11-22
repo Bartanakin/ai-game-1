@@ -130,7 +130,7 @@ Enemy* AgentRepository::addNewEnemy(
     behaviourData.groupBehaviours.minimalSeparationDistance = 2 * ENEMY_RADIUS + 5.f;
     behaviourData.maxSpeed = Enemy::MAX_SPEED;
     behaviourData.accelerationDelay = .5f;
-    std::mt19937 engine(100);
+    std::default_random_engine engine(randomDevice());
     auto enemy = new Enemy(
         {
             Barta::SFML_GraphicsBridge::createNewTransformableInstance(),
@@ -138,7 +138,7 @@ Enemy* AgentRepository::addNewEnemy(
             4
     },
         std::unique_ptr<Barta::HitboxInterface>(new Barta::CircleHitbox(circle)),
-        {Barta::Vector2f(Enemy::MAX_SPEED, 0.f).rotated(std::uniform_real_distribution<float>(0.f, 2 * M_PI)(engine)),
+        {Barta::Vector2f(Enemy::MAX_SPEED, 0.f).rotated(std::uniform_real_distribution<float>(0.f, 2.f * M_PI)(engine)),
          false,
          1.f,
          {},

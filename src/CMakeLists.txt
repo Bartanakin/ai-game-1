@@ -31,6 +31,8 @@ add_executable(${PROJECT_NAME}
         Behaviours/Flee.h
         EnemyEvadeBehaviours.cpp
         EnemyEvadeBehaviours.h
+        EnemyWanderBehaviours.cpp
+        EnemyWanderBehaviours.h
         Subscribers/EnemyCollisionSubscriber.cpp
         Subscribers/EnemyCollisionSubscriber.h
         Behaviours/Seek.cpp

@@ -8,11 +8,13 @@
 SteeringBehaviourStrategy::SteeringBehaviourStrategy(
     ListManager& listManager,
     Behaviours::BehaviourInterface& enemyEvadeBehaviour,
-    Behaviours::BehaviourInterface& enemyAttackBehaviour
+    Behaviours::BehaviourInterface& enemyAttackBehaviour,
+    Behaviours::BehaviourInterface& enemyWanderBehaviour
 ):
     listManager(listManager),
     enemyEvadeBehaviour(enemyEvadeBehaviour),
-    enemyAttackBehaviour(enemyAttackBehaviour) {}
+    enemyAttackBehaviour(enemyAttackBehaviour),
+    enemyWanderBehaviour(enemyWanderBehaviour) {}
 
 void SteeringBehaviourStrategy::prepare(
     const float deltaTime
@@ -22,13 +24,16 @@ void SteeringBehaviourStrategy::prepare(
     Barta::ConstVelocityDynamicsUpdateStrategy{enemyList}.prepare(deltaTime);
 
     for (auto enemy: enemyList) {
-        if (enemy->isTriggered() && enemy->getTriggerTimePoint() < std::chrono::steady_clock::now()) {
-            enemy->getNextDynamicsData().force =
-                this->enemyAttackBehaviour.changeBehaviour(*static_cast<Behaviours::BehavioursDataAwareInterface*>(enemy), deltaTime);
-        } else {
-            enemy->getNextDynamicsData().force =
-                this->enemyEvadeBehaviour.changeBehaviour(*static_cast<Behaviours::BehavioursDataAwareInterface*>(enemy), deltaTime);
+        Behaviours::BehaviourInterface* behaviour;
+        switch (enemy->getBehaviourType()) {
+        case Enemy::EnemyBehaviourType::ATTACK: behaviour = &this->enemyAttackBehaviour; break;
+
+        case Enemy::EnemyBehaviourType::HIDE: behaviour = &this->enemyEvadeBehaviour; break;
+
+        case Enemy::EnemyBehaviourType::WANDER: behaviour = &this->enemyWanderBehaviour; break;
         }
+
+        enemy->getNextDynamicsData().force = behaviour->changeBehaviour(*static_cast<Behaviours::BehavioursDataAwareInterface*>(enemy), deltaTime);
     }
 
     // player
